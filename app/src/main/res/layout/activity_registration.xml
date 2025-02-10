@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/fragment_layout"
+        android:layout_width="300sp"
+        android:layout_height="wrap_content"
+        android:background="#81A8FF"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Регистрация"
+            android:layout_marginTop="10sp"
+            android:textAlignment="center"
+            android:textColor="#2A5BBD"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:textColor="@color/black"
+            android:ems="10"
+            android:hint="Введите имя"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:textColorHint="#000000" />
+
+        <EditText
+            android:id="@+id/editTextText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:textColor="@color/black"
+            android:ems="10"
+            android:hint="Введите логин"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:textColorHint="#000000" />
+
+        <EditText
+            android:id="@+id/editTextTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            android:textColor="@color/black"
+            android:ems="10"
+            android:hint="Введите пароль"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:textColorHint="#000000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="300sp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_layout"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/button_registration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#3F51B5"
+            android:textColor="@color/white"
+            android:text="Зарегистрироваться" />
+
+        <Button
+            android:id="@+id/button_goBack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#1570E7"
+            android:textColor="@color/white"
+            android:onClick="goBack"
+            android:text="Назад"
+            tools:ignore="OnClick" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
