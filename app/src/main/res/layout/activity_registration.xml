@@ -32,7 +32,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/user_name"
+            android:id="@+id/nameInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20sp"
@@ -46,7 +46,7 @@
             android:textColorHint="#000000" />
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/loginInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20sp"
@@ -60,7 +60,7 @@
             android:textColorHint="#000000" />
 
         <EditText
-            android:id="@+id/editTextTextPassword"
+            android:id="@+id/passwordInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20sp"
@@ -87,12 +87,14 @@
         tools:ignore="MissingConstraints">
 
         <Button
-            android:id="@+id/button_registration"
+            android:id="@+id/button_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#3F51B5"
+            android:onClick="goUser"
+            android:text="Зарегистрироваться"
             android:textColor="@color/white"
-            android:text="Зарегистрироваться" />
+            tools:ignore="OnClick" />
 
         <Button
             android:id="@+id/button_goBack"
