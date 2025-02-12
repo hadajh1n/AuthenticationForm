@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class UserActivity extends AppCompatActivity {
     private TextView user_name, dbOutput;
     private DatabaseHelper dbHelper;
     private Cursor cursor;
+    private Button button_delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,7 @@ public class UserActivity extends AppCompatActivity {
 
         user_name = findViewById(R.id.user_name);
         dbOutput = findViewById(R.id.dbOutput);
+        button_delete = findViewById(R.id.button_delete);
 
         user_name.setText("Привет, пользователь =)");
 
@@ -65,6 +68,16 @@ public class UserActivity extends AppCompatActivity {
         } else {
             Log.e("DB_ERROR", "Ошибка при получении данных из БД");
         }
+
+        button_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbHelper.deleteUser();
+                overridePendingTransition(0,0);
+                recreate();
+                overridePendingTransition(0,0);
+            }
+        });
     }
 
     public void goBackMainActivity(View v) {

@@ -30,19 +30,33 @@ public class MainActivity extends AppCompatActivity {
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goUser_main(v);
+                loginUser(v);
             }
         });
     }
 
+    public void loginUser(View view) {
+        EditText loginInput = findViewById(R.id.login_auth);
+        EditText passwordInput = findViewById(R.id.password_auth);
+
+        String login = loginInput.getText().toString().trim();
+        String password = passwordInput.getText().toString().trim();
+
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+        if (dbHelper.authenticationUser(login, password)) {
+            Toast.makeText(this, "Вход выполнен!", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, UserActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0,0);
+            finish();
+        } else {
+            Toast.makeText(this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show();
+        }
+    }
     public void registrationActivity(View v) {
         Intent intent = new Intent(this, RegistrationActivity.class);
-        startActivity(intent);
-        overridePendingTransition(0,0);
-    }
-
-    public void goUser_main(View view) {
-        Intent intent = new Intent(this, UserActivity.class);
         startActivity(intent);
         overridePendingTransition(0,0);
     }
