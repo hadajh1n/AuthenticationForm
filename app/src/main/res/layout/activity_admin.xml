@@ -9,6 +9,20 @@
     tools:context=".AdminActivity">
 
     <Button
+        android:id="@+id/button_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10sp"
+        android:layout_marginTop="10sp"
+        android:textColor="@color/white"
+        android:background="#00FFFFFF"
+        android:backgroundTint="#00FFFFFF"
+        android:text="Удалить базу данных"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
         android:id="@+id/button_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +55,7 @@
             android:background="@color/background">
 
             <TextView
-                android:id="@+id/user_name"
+                android:id="@+id/admin_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50sp"
@@ -53,26 +67,26 @@
         </FrameLayout>
 
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/dbOutput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="Тут будет много данных..."
+                android:layout_marginStart="30sp"
+                android:layout_marginEnd="30sp"
+                android:layout_marginTop="30sp"
+                android:textSize="16sp"/>
 
-                <TextView
-                    android:id="@+id/dbOutput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Тут будет много данных..."
-                    android:layout_marginStart="30sp"
-                    android:layout_marginEnd="30sp"
-                    android:layout_marginTop="30sp"
-                    android:textSize="16sp"/>
-
-            </LinearLayout>
-        </ScrollView>
+        </LinearLayout>
+    </ScrollView>
 
 
     </LinearLayout>

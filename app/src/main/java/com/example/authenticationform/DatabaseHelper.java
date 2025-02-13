@@ -5,8 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -64,19 +63,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteUser() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_USERS, null, null);
-        db.execSQL("DELETE FROM sqlite_sequence WHERE name='" + TABLE_USERS + "'");
-        db.close();
+        try {
+            db.delete(TABLE_USERS, null, null);
+            db.execSQL("DELETE FROM sqlite_sequence WHERE name='" + TABLE_USERS + "'");
+        } catch (Exception e) {
+            Log.e("DB_ERROR", "Ошибка при удалении пользователей: " + e.getMessage());
+        } finally {
+            db.close();
+        }
     }
 
-    public boolean authenticationUser(String login, String password) {
+    public int authenticationUser(String login, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " +
-                COLUMN_LOGIN + "=? AND " + COLUMN_PASSWORD + "=?",
+        Cursor cursor = db.rawQuery("SELECT id FROM users WHERE login=? AND password=?",
                 new String[]{login,password});
 
-        boolean exists = cursor.getCount() > 0;
+        int userID = -1;
+        if (cursor.moveToFirst()) {
+            userID = cursor.getInt(0);
+        }
         cursor.close();
-        return exists;
+        return userID;
+    }
+
+    public String user_name(String login) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT name FROM users WHERE login=?",
+                new String[]{login});
+
+        String name = "пользователь";
+        if (cursor.moveToFirst()) {
+            name = cursor.getString(0);
+        }
+        cursor.close();
+        return name;
     }
 }
