@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private Button button_next;
+    private DatabaseHelper dbHelper;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -21,84 +22,71 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences preferences = getSharedPreferences("auth", MODE_PRIVATE);
-        String savedLogin = preferences.getString("USER_LOGIN", null);
+        dbHelper = new DatabaseHelper(this);
 
-        if (savedLogin != null) {
-            Intent intent = new Intent(this, UserActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0,0);
+        SharedPreferences preferences = getSharedPreferences("auth", MODE_PRIVATE);
+        String savedLogin = preferences.getString("USER_LOGIN", "");
+
+        if (!savedLogin.isEmpty()) {
+            if (savedLogin.equals((DatabaseHelper.LOGIN_ADMIN))) {
+                startActivity(new Intent(this, AdminActivity.class));
+            } else {
+                startActivity(new Intent(this, UserActivity.class));
+            }
             finish();
         }
 
         button_next = findViewById(R.id.button_next);
+        EditText editLogin = findViewById(R.id.login_auth);
+        EditText editPassword = findViewById(R.id.password_auth);
 
-        button_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginUser(v);
+        button_next.setOnClickListener(v -> {
+            String login = editLogin.getText().toString().trim();
+            String password = editPassword.getText().toString().trim();
+
+            if(login.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Заполните поля", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(dbHelper.isAdmin(login, password)) {
+                savedLogin(login);
+                goAdmin();
+            } else {
+                loginUser(login, password);
             }
         });
     }
 
-    public void loginUser(View view) {
-        EditText loginInput = findViewById(R.id.login_auth);
-        EditText passwordInput = findViewById(R.id.password_auth);
+    private void savedLogin(String login) {
+        SharedPreferences preferences = getSharedPreferences("auth", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("USER_LOGIN", login);
+        editor.apply();
+    }
 
-        String login = loginInput.getText().toString().trim();
-        String password = passwordInput.getText().toString().trim();
+    private void goAdmin() {
+        Intent intent = new Intent(this, AdminActivity.class);
+        startActivity(intent);
+        overridePendingTransition(0,0);
+        finish();
+    }
 
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
+    public void loginUser(String login, String password) {
         int userID = dbHelper.authenticationUser(login, password);
 
-        if (userID != -1) {
+        if(userID != -1) {
             Toast.makeText(this, "Вход выполнен", Toast.LENGTH_SHORT).show();
-
-            SharedPreferences preferences = getSharedPreferences("auth", MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("USER_LOGIN", login);
-            editor.apply();
+            savedLogin(login);
 
             Intent intent = new Intent(this, UserActivity.class);
-            intent.putExtra("USER_LOGIN", login);
             startActivity(intent);
-            overridePendingTransition(0,0);
+            overridePendingTransition(0, 0);
             finish();
         } else {
             Toast.makeText(this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show();
         }
     }
-
-    /*
-    public void loginAdmin(View view) {
-        EditText loginInput = findViewById(R.id.login_auth);
-        EditText passwordInput = findViewById(R.id.password_auth);
-
-        String login = loginInput.getText().toString().trim();
-        String password = passwordInput.getText().toString().trim();
-
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        int userID = dbHelper.authenticationUser(login,password);
-
-        if (userID != -1) {
-            Toast.makeText(this, "Вход выполнен!", Toast.LENGTH_SHORT).show();
-
-            SharedPreferences preferences = getSharedPreferences("users", MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt("id", userID);
-            editor.apply();
-
-            Intent intent = new Intent(this, AdminActivity.class);
-            intent.putExtra("id", userID);
-            startActivity(intent);
-            overridePendingTransition(0,0);
-            finish();
-        } else {
-            Toast.makeText(this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    */
 
     public void registrationActivity(View v) {
         Intent intent = new Intent(this, RegistrationActivity.class);

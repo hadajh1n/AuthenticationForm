@@ -1,6 +1,7 @@
 package com.example.authenticationform;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +34,11 @@ public class RegistrationActivity extends AppCompatActivity {
                 String name = nameInput.getText().toString();
                 String login = loginInput.getText().toString();
                 String password = passwordInput.getText().toString();
+
+                SharedPreferences preferences = getSharedPreferences("auth", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("USER_LOGIN", login);
+                editor.apply();
 
                 if (name.isEmpty() || login.isEmpty() || password.isEmpty()) {
                     Toast.makeText(RegistrationActivity.this, "Заполните все поля", Toast.LENGTH_SHORT).show();

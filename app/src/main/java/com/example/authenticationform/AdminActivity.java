@@ -2,6 +2,8 @@ package com.example.authenticationform;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SyncRequest;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,8 +17,8 @@ public class AdminActivity extends AppCompatActivity {
 
     private TextView admin_name, dbOutput;
     private DatabaseHelper dbHelper;
-    private Cursor cursor;
     private Button button_delete;
+    private Cursor cursor;
 
     @SuppressLint({"WrongViewCast", "MissingInflatedId"})
     @Override
@@ -28,58 +30,71 @@ public class AdminActivity extends AppCompatActivity {
         dbOutput = findViewById(R.id.dbOutput);
         button_delete = findViewById(R.id.button_delete);
 
-        admin_name.setText("Вы вошли как администратор");
+        SharedPreferences preferences = getSharedPreferences("auth", MODE_PRIVATE);
+        String userLogin = preferences.getString("USER_LOGIN", "");
+
+        if (userLogin.equals(DatabaseHelper.LOGIN_ADMIN)) {
+            admin_name.setText("Вы вошли как администратор");
+            dbHelper = new DatabaseHelper(this);
+            loadDatabaseData();
+        } else {
+            admin_name.setText("Ошибка входа");
+            startActivity(new Intent(this, MainActivity.class));
+            overridePendingTransition(0,0);
+            finish();
+            return;
+        }
 
         dbHelper = new DatabaseHelper(this);
-        cursor = dbHelper.getAllUsers();
+        loadDatabaseData();
 
-        if (cursor != null) {
+        button_delete.setOnClickListener(view -> {
+                dbHelper.deleteUser();
+                loadDatabaseData();
+            });
+        }
+
+        private void loadDatabaseData() {
+            cursor = dbHelper.getAllUsers();
+
+            if (cursor == null || cursor.getCount() == 0) {
+                dbOutput.setText("База данных пуста.");
+                Log.d("DB_OUTPUT", "База данных пуста.");
+                return;
+            }
             try {
-                if (cursor.moveToFirst()) {
-                    StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new StringBuilder();
+                while (cursor.moveToNext()) {
+                    int id = cursor.getInt(0);
+                    String name = cursor.getString(1);
+                    String login = cursor.getString(2);
+                    String password = cursor.getString(3);
 
-                    do {
-                        int id = cursor.getInt(0);
-                        String name = cursor.getString(1);
-                        String login = cursor.getString(2);
-                        String password = cursor.getString(3);
+                    stringBuilder.append("ID: ").append(id)
+                            .append("\nИмя: ").append(name)
+                            .append("\nЛогин: ").append(login)
+                            .append("\nПароль: ").append(password)
+                            .append("\n-------------------------\n");
 
-                        stringBuilder.append("ID: ").append(id)
-                                .append("\nИмя: ").append(name)
-                                .append("\nЛогин: ").append(login)
-                                .append("\nПароль: ").append(password)
-                                .append("\n-------------------------\n");
-
-                        Log.d("DB_OUTPUT", "ID: " + id + ", Name: " + name + ", Login: " + login + ", Password: " + password);
-
-                    } while (cursor.moveToNext());
-
-                    dbOutput.setText(stringBuilder.toString());
-                } else {
-                    dbOutput.setText("База данных пуста.");
-                    Log.d("DB_OUTPUT", "База данных пуста.");
+                    Log.d("DB_OUTPUT", "ID: " + id + ", Name: " + name + ", Login: " + login + ", Password: " + password);
                 }
+                dbOutput.setText(stringBuilder.toString());
+            } catch (Exception e) {
+                Log.e("DB_ERROR", "Ошибка при обработке данных: " + e.getMessage());
             } finally {
                 cursor.close();
             }
-        } else {
-            Log.e("DB_ERROR", "Ошибка при получении данных из БД");
         }
 
-        button_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dbHelper.deleteUser();
-                overridePendingTransition(0,0);
-                recreate();
-                overridePendingTransition(0,0);
-            }
-        });
-    }
-
     public void goBackMainActivity(View v) {
+        SharedPreferences preferences = getSharedPreferences("auth", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         overridePendingTransition(0,0);
+        finish();
     }
 }
