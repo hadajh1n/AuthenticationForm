@@ -33,7 +33,6 @@ public class UserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user);
 
         TextView user_name = findViewById(R.id.user_name);
-        TextView dbOutput = findViewById(R.id.dbOutput);
 
         Button menuButton = findViewById(R.id.button_menu);
         menuButton.setOnClickListener(this::showMenu);
@@ -55,22 +54,6 @@ public class UserActivity extends AppCompatActivity {
         } else {
             user_name.setText("Гость");
         }
-
-        loadUserData(dbHelper, userLogin, dbOutput);
-    }
-
-    private void loadUserData(DatabaseHelper dbHelper, String login, TextView dbOutput) {
-        Cursor cursor = dbHelper.getUserData(login);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            String userInfo = "Имя: " + cursor.getString(1) +
-                    "\nЛогин: " + cursor.getString(2) +
-                    "\nПароль: " + cursor.getString(3);
-            dbOutput.setText(userInfo);
-            cursor.close();
-        } else {
-            dbOutput.setText("Ошибка загрузки данных...");
-        }
     }
 
     private void showMenu(View view) {
@@ -89,12 +72,18 @@ public class UserActivity extends AppCompatActivity {
         int itemID = item.getItemId();
 
         if (itemID == R.id.action_profile) {
-
+            profile();
         } else if (itemID == R.id.action_settings) {
 
         } else if (itemID == R.id.action_logout) {
             logout();
         }
+    }
+
+    private void profile() {
+        Intent intent = new Intent(UserActivity.this, ProfileActivity.class);
+        startActivity(intent);
+        overridePendingTransition(0,0);
     }
 
     private void logout() {
